@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from './auth.service';
+import { Observable } from 'rxjs';
+import { AuthResponseData, AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -14,11 +15,14 @@ export class AppComponent {
   onSubmit(form: NgForm){
     const email = form.value.email;
     const password = form.value.password;
-    this.authService.signIn(email, password).subscribe(resData => {
+    let authObs: Observable<AuthResponseData>;
+    authObs = this.authService.login(email, password)
+    authObs.subscribe(resData => {
       console.log(resData);
     }, error =>{
-      this.error = ' we have an issue in the backend';
+      this.error = 'This is the Isse : ' + error.error.msg;
       console.log(error);
+      console.log(error.error.msg);
     });
     //console.log(form.value);
     form.reset;
